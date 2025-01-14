@@ -2,6 +2,7 @@
 // import { createServer } from "http";
 // import cors from "cors";
 // import { Server } from "socket.io";
+// import { handleNewConnection, setUpSFU } from "./sfu.js";
 
 // const app = express();
 // const server = createServer(app);
@@ -15,22 +16,30 @@
 //   },
 // });
 
+// setUpSFU();
 // io.on("connection", (socket) => {
 //   console.log("User connected: ", socket.id);
 
-//   socket.on("webRTC-offer", (offer) => {
-//     console.log(offer);
-//     socket.broadcast.emit("webRTC-offer", offer);
-//   });
+//   // socket.on("webRTC-offer", (offer) => {
+//   //   console.log(offer);
+//   //   socket.broadcast.emit("webRTC-offer", offer);
+//   // });
 
-//   socket.on("webRTC-answer", (answer) => {
-//     console.log(answer);
-//     socket.broadcast.emit("webRTC-answer", answer);
-//   });
+//   // socket.on("webRTC-answer", (answer) => {
+//   //   console.log(answer);
+//   //   socket.broadcast.emit("webRTC-answer", answer);
+//   // });
 
-//   socket.on("ice-candidate", (candidate) => {
-//     console.log(candidate);
-//     socket.broadcast.emit("ice-candidate", candidate);
+//   // socket.on("ice-candidate", (candidate) => {
+//   //   console.log(candidate);
+//   //   socket.broadcast.emit("ice-candidate", candidate);
+//   // });
+
+//   // Handle any custom messages (e.g., join request, transport setup)
+//   socket.on("message", (message) => {
+//     const data = JSON.parse(message);
+//     console.log("Received message:", data);
+//     handleNewConnection(socket, data); // Custom logic for handling new connection
 //   });
 
 //   // Handle disconnection
@@ -39,85 +48,64 @@
 //   });
 // });
 
-// app.get("/", (req, res) => {
-//   res.json("hello world");
-// });
+// // app.get("/", (req, res) => {
+// //   res.json("hello world");
+// // });
 
 // server.listen(port, () => {
 //   console.log("Server is Listening at port : " + port);
 // });
 
 import express from "express";
-import { createServer } from "http";
+import http from "http";
+import cors from "cors";
 import { Server } from "socket.io";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-import path from "path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const app = express();
-const server = createServer(app);
+const server = http.createServer(app);
+app.use(cors({ origin: "*" }));
+
 const io = new Server(server, {
   cors: {
     origin: "*",
-    methods: ["GET", "POST"],
   },
 });
-
-// Store active rooms and their users
-const rooms = new Map();
+app.get("/", (req, res) => {
+  res.send("Audio Chat Server Running");
+});
 
 io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
+  console.log("A user connected: " + socket.id);
 
-  socket.on("join-room", ({ roomId, username }) => {
-    // Join the socket.io room
-    socket.join(roomId);
+  socket.on("offer", (offer, room) => {
+    socket.to(room).emit("offer", offer, socket.id);
+  });
 
-    // Initialize room if it doesn't exist
-    if (!rooms.has(roomId)) {
-      rooms.set(roomId, new Set());
+  socket.on("answer", (answer, room) => {
+    socket.to(room).emit("answer", answer);
+  });
+
+  socket.on("candidate", (candidate, room) => {
+    socket.to(room).emit("candidate", candidate);
+  });
+
+  socket.on("join", (room) => {
+    const rooms = io.sockets.adapter.rooms[room] || { length: 0 };
+    const numClients = rooms.length;
+
+    if (numClients === 0) {
+      socket.join(room);
+      socket.emit("created");
+    } else {
+      socket.join(room);
+      socket.emit("joined");
     }
-
-    // Add user to room
-    const user = { id: socket.id, username };
-    rooms.get(roomId).add(user);
-
-    // Notify others in the room
-    socket.to(roomId).emit("user-connected", user);
-
-    // Send list of existing users to the new participant
-    const usersInRoom = Array.from(rooms.get(roomId));
-    socket.emit("room-users", usersInRoom);
-
-    console.log(`${username} joined room ${roomId}`);
   });
 
-  // Handle WebRTC signaling
-  socket.on("signal", ({ userId, signal }) => {
-    io.to(userId).emit("signal", {
-      userId: socket.id,
-      signal,
-    });
-  });
-
-  // Handle disconnection
   socket.on("disconnect", () => {
-    rooms.forEach((users, roomId) => {
-      const userArray = Array.from(users);
-      const user = userArray.find((u) => u.id === socket.id);
-      if (user) {
-        users.delete(user);
-        io.to(roomId).emit("user-disconnected", socket.id);
-        console.log(`User ${user.username} disconnected from room ${roomId}`);
-      }
-    });
+    console.log("User disconnected");
   });
 });
 
-const PORT = 8008;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
