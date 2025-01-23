@@ -1,0 +1,111 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.mainDiv {
+  position: absolute;
+  inset: 0;
+  z-index: -10;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  background-image: linear-gradient(to right, #f0f0f0 1px, transparent 1px),
+    linear-gradient(to bottom, #f0f0f0 1px, transparent 1px);
+  background-size: 6rem 4rem;
+
+  font-family: "Inter", serif;
+}
+
+.radial-gradient {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-image: radial-gradient(
+    circle 800px at 100% 200px,
+    #d5c5ff,
+    transparent
+  );
+}
+
+header {
+  width: 100%;
+  position: fixed;
+  backdrop-filter: blur(3px);
+  z-index: 50;
+}
+
+.navbar {
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  font-weight: 600;
+  margin: 0px auto;
+  justify-content: space-between;
+  align-items: center;
+
+  ul {
+    display: flex;
+    list-style: none;
+    gap: 100px;
+
+    li:hover {
+      color: red;
+      cursor: pointer;
+    }
+  }
+}
+
+.hero-section {
+  width: 80%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  padding: 100px 0px;
+}
+
+.hero-section aside {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 10;
+}
+
+.hero-section h1 {
+  font-size: 36px;
+  font-weight: 400;
+}
+
+.hero-section span {
+  font-size: 24px;
+}
+
+.hero-section p {
+  font-weight: 300;
+}
+
+.hero-section button {
+  margin-top: 10px;
+  padding: 10px;
+  width: 150px;
+  background: linear-gradient(to right, pink, lightblue);
+  border: none;
+  border-radius: 5px;
+}
+
+.hero-section button:hover {
+  cursor: pointer;
+}
+
+.hero-section img {
+  width: 30%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 10px;
+  z-index: 10;
+}
