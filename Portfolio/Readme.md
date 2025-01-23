@@ -16,7 +16,10 @@ Add the following `@import` rule in your CSS file to include the Inter font fami
 
 ```html
 <div class="mainDiv">
-  <div class="radial-gradient"></div>
+  <div class="background-container">
+    <div class="radial-gradient"></div>
+  </div>
+  <!-- Rest of your code.... -->
 </div>
 ```
 
@@ -24,6 +27,11 @@ Add the following `@import` rule in your CSS file to include the Inter font fami
 
 ```css
 .mainDiv {
+  font-family: "Inter", serif;
+  position: relative;
+}
+
+.background-container {
   position: absolute;
   inset: 0;
   z-index: -10;
@@ -33,7 +41,6 @@ Add the following `@import` rule in your CSS file to include the Inter font fami
   background-image: linear-gradient(to right, #f0f0f0 1px, transparent 1px),
     linear-gradient(to bottom, #f0f0f0 1px, transparent 1px);
   background-size: 6rem 4rem;
-  font-family: "Inter", serif;
 }
 
 .radial-gradient {
@@ -49,18 +56,3 @@ Add the following `@import` rule in your CSS file to include the Inter font fami
   );
 }
 ```
-
-### Explanation
-
-1. **`mainDiv` Class**:
-
-   - The `mainDiv` creates a grid-like background using two linear gradients that intersect.
-   - It uses the imported Inter font family for any text contained within.
-
-2. **`radial-gradient` Class**:
-   - The `radial-gradient` overlays the `mainDiv` with a radial gradient originating from the top-right corner.
-   - The gradient transitions from `#d5c5ff` to transparent, creating a subtle visual effect.
-
-## Preview
-
-Ensure your HTML and CSS files are linked correctly to see the background and font styling. The `mainDiv` spans the full viewport, and the radial gradient adds a decorative touch.
