@@ -1,0 +1,58 @@
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.atmcard {
+  width: 350px;
+  height: 200px;
+  background: linear-gradient(
+      90deg,
+      rgba(0, 47, 255, 0.8),
+      rgba(5, 242, 246, 0.8)
+    ),
+    url("map.png");
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.banklogo {
+  width: 100px;
+  margin: 0px 10px;
+  filter: invert();
+}
+
+.chip {
+  width: 50px;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+.atmPin {
+  display: flex;
+  padding: 0px 10px;
+  justify-content: space-between;
+  color: white;
+  font-size: 18px;
+  letter-spacing: 3px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: white;
+}
+
+.footer img {
+  width: 100px;
+}
